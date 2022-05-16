@@ -1,16 +1,16 @@
 import pandas as pd
 import mpmath as mp
-from mpmath import mpf, nprint
+from mpmath import mpf
 import matplotlib.pyplot as plt
 import numpy as np
 
-mp.dps = 64  #
+mp.dps = 64  # increasing accuracy
 
 '''
-1 - dimensional energy balance model(version 1.4, 14 January 2005)
-based on the text book by Henderson - Sellers and McGuffie(1987):
+1 - dimensional energy balance model based on the text book 
+by Henderson - Sellers and McGuffie (1987):
 
-Two - hemispheres version(18 latitude zones)
+Two - hemispheres version (18 latitude zones)
 
 This program computes the surface temperature of a latitude zone from the local
 energy balance.It includes the ice-albedo feedback
@@ -25,9 +25,9 @@ snapshot file
 '''
 
 # DEFINITION OF CONSTANTS
-pi = mpf(3.14159265358979)
-deg2rad = pi / mpf(180.0)  # Degrees to radians conversion factor
-deg2dist = mpf(111194.9)  # Distance that corresponds to one degree of latitude in units of m
+pi = mpf('3.14159265358979')
+deg2rad = pi / mpf(180)  # Degrees to radians conversion factor
+deg2dist = mpf('111194.9')  # Distance that corresponds to one degree of latitude in units of m
 
 jmt = 20  # number of grid points in the latitudinal direction
 jmtm1 = jmt - 1
@@ -77,21 +77,21 @@ def albedo(Yt, Yu, tcrit, asfc, aice, t, apln):
                 ysouth = yu[j]
                 ynorth = yu[j + 1]
                 wice = (mp.sin(yice_s * deg2rad) - mp.sin(ysouth * deg2rad)) / (mp.sin(ynorth * deg2rad) - mp.sin(ysouth * deg2rad))
-                amix_s = asfc[j + 1] * (mpf(1.0) - wice) + aice * wice
+                amix_s = asfc[j + 1] * (mpf(1) - wice) + aice * wice
                 jice_s = j + 2
             else:  # Ice boundary more than half - way between grid points
                 # print("SOUTHERN: Ice boundary more than half - way between grid points")
                 ysouth = yu[j - 1]
                 ynorth = yu[j]
                 wice = (mp.sin(yice_s * deg2rad) - mp.sin(ysouth * deg2rad)) / (mp.sin(ynorth * deg2rad) - mp.sin(ysouth * deg2rad))
-                amix_s = asfc[j] * (mpf(1.0) - wice) + aice * wice
+                amix_s = asfc[j] * (mpf(1) - wice) + aice * wice
                 jice_s = j + 1
 
     # Set planetary albedo of zones
     if t[1] > tcrit:  # Totally ice - free case
         # print("SOUTHERN: Totally ice - free case")
         jice_s = 0
-        yice_s = mpf(-90.0)
+        yice_s = mpf(-90)
 
         for j in range(1, half_jmt):
             apln[j] = asfc[j]
@@ -99,7 +99,7 @@ def albedo(Yt, Yu, tcrit, asfc, aice, t, apln):
     elif t[half_jmt-1] <= tcrit:  # Totally ice - covered case
         # print("SOUTHERN: Totally ice - covered case")
         jice_s = half_jmt
-        yice_s = mpf(0.0)
+        yice_s = mpf(0)
 
         for j in range(1, half_jmt):
             apln[j] = aice
@@ -120,7 +120,7 @@ def albedo(Yt, Yu, tcrit, asfc, aice, t, apln):
     for j in range(jmtm1-1, half_jmt-1, -1):  # starting at North Pole
         if (t[j] < tcrit) & (t[j-1] >= tcrit): # Actual grid cell colder than critical temperature, but grid cell to the south not: partial ice cover (assumes temperature monotonous function of latitude)
             # print("NOTHERN: Actual grid cell colder than critical temperature, but grid cell to the south not: partial ice cover (assumes temperature monotonous function of latitude")
-            dphi = (-tcrit + t[j-1])/(t[j-1] - t[j])*mpf(0.1745)/deg2rad
+            dphi = (-tcrit + t[j-1])/(t[j-1] - t[j])*mpf('0.1745')/deg2rad
             yice_n = yt[j-1] + dphi
 
             if yice_n < yu[j-1]:  # Ice boundary less than half-way between grid points
@@ -128,21 +128,21 @@ def albedo(Yt, Yu, tcrit, asfc, aice, t, apln):
                ysouth = yu[j-2]
                ynorth = yu[j-1]
                wice = (mp.sin(ynorth*deg2rad) - mp.sin(yice_n*deg2rad)) / (mp.sin(ynorth*deg2rad) - mp.sin(ysouth*deg2rad))
-               amix_n = asfc[j-1]*(mpf(1.0) - wice) + aice*wice
+               amix_n = asfc[j-1]*(mpf(1) - wice) + aice*wice
                jice_n = j
             else:  # Ice boundary more than half-way between grid points
                # print("NOTHERN: Ice boundary more than half-way between grid points")
                ysouth = yu[j-1]
                ynorth = yu[j]
                wice = (mp.sin(ynorth*deg2rad) - mp.sin(yice_n*deg2rad)) / (mp.sin(ynorth*deg2rad) - mp.sin(ysouth*deg2rad))
-               amix_n = asfc[j]*(mpf(1.0) - wice) + aice*wice
+               amix_n = asfc[j]*(mpf(1) - wice) + aice*wice
                jice_n = j+1
 
     # Set planetary albedo of zones
     if t[jmtm1-1] > tcrit:  # Totally ice-free case
         # print("NOTHERN: Totally ice-free case")
         jice_n = 0.0
-        yice_n = mpf(90.0)
+        yice_n = mpf(90)
 
         for j in range(jmtm1-1, half_jmt-1, -1):
             apln[j] = asfc[j]
@@ -150,7 +150,7 @@ def albedo(Yt, Yu, tcrit, asfc, aice, t, apln):
     elif t[half_jmt] <= tcrit:  # Totally ice-covered case
         # print("NOTHERN: Totally ice-covered case")
         jice_n = half_jmt
-        yice_n = mpf(0.0)
+        yice_n = mpf(0)
 
         for j in range(jmtm1-1, half_jmt-1, -1):
             apln[j] = aice
@@ -216,7 +216,7 @@ def EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s
 
         References: Henderson-Sellers and McGuffie (1987) '''
 
-    p2 = pi / 2.0  # "pi over 2"
+    p2 = pi / mpf(2)  # "pi over 2"
     solin = sfrac * scon0 * 0.25 * s  # solar insolation (W m^(-2))
 
     # Set model grid:
@@ -227,18 +227,18 @@ def EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s
     for j in range(0, jmt):
 
         T_dict, U_dict = {}, {}
-        T_dict['yt'] = mpf(-95.0)  # T grid cell latitude
+        T_dict['yt'] = mpf(-95)  # T grid cell latitude
         if j > 0:
-            T_dict['yt'] = Yt['yt'][j-1] + mpf(10.0)
+            T_dict['yt'] = Yt['yt'][j-1] + mpf(10)
         T_dict['sint'] = mp.sin(T_dict['yt']*deg2rad)  # sine of T grid cell latitude
         T_dict['cst'] = mp.cos(T_dict['yt']*deg2rad)  # cosine of T grid cell latitude
 
         Yt = Yt.append(T_dict, ignore_index=True)
 
-        # U_dict['dyu'] = mpf(10.0) * deg2dist  # U grid cell height
-        U_dict['yu'] = mpf(-90.0)  # U grid cell latitude
+        # U_dict['dyu'] = mpf(10) * deg2dist  # U grid cell height
+        U_dict['yu'] = mpf(-90)  # U grid cell latitude
         if j > 0:
-            U_dict['yu'] = Yu['yu'][j-1] + mpf(10.0)
+            U_dict['yu'] = Yu['yu'][j-1] + mpf(10)
 
         U_dict['sinu'] = mp.sin(U_dict['yu'] * deg2rad)  # sine of U grid cell latitude
         U_dict['csu'] = mp.cos(U_dict['yu'] * deg2rad)  # cosine of U grid cell latitude
@@ -410,7 +410,7 @@ if __name__ == '__main__':
     scon0 = 1370.0  # solar constant (W m^(-2)), present - day value(Henderson - Sellers and McGuffie 1987)
     eccen = 0.0167  # numerical eccentricity of Earth's orbit, present - day value(Berger 1978)
     tcrit = -10.0  # temperature at which the surface becomes ice covered (def = -10.0)
-    grid_step = mpf(3.14159) / mpf(18.0)  # grid step(10\B0)
+    grid_step = mpf('3.14159') / mpf(18)  # grid step(10\B0)
 
     sfrac = 1.0  # fractional solar constant (def = 1.0)
     ktrans = 3.81  # transport coefficient (W m^(-2) K^(-1)) -  relaxation coeffient in Newtonian (linear) approximation of meridional heat transport divergence (def = 3.81)
@@ -421,14 +421,14 @@ if __name__ == '__main__':
 
     # Initialize time step
     dt = 30          # time step in days
-    dt = dt * mpf(86400.0)    # time step in seconds
+    dt = dt * mpf(86400)    # time step in seconds
     year0 = 1.0        # initial model year
     model_time = year0  # current date time
     runlen = 100.0     # run length in years
     ndaymonth = 30.0  # number of days per month
     year_len = 12 * ndaymonth  # number of days in year
 
-    ittmax = round(runlen * year_len * mpf(86400.0) / dt)  # maximum number of integer time counter (maximum number of timesteps)
+    ittmax = round(runlen * year_len * mpf(86400) / dt)  # maximum number of integer time counter (maximum number of timesteps)
 
     latzone = df_init['Zone']
     s = df_init['s']
