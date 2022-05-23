@@ -391,10 +391,6 @@ if __name__ == '__main__':
 
     # Set file names
     fnameinit = "init_2h.dat"
-    fnameforc = "crowley2000_forcing_test.dat"
-    fnamehist = "history.dat"
-    fnamesnap = "snapshot.dat"
-    fnamestab = "stability.dat"
 
     df_init = pd.read_csv(fnameinit, skiprows=3, delimiter=r"\s+")
     for col in df_init.columns:
