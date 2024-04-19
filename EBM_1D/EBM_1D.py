@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def main():
+
 
 mp.dps = 64  # increasing accuracy
 
@@ -545,6 +545,3 @@ if __name__ == '__main__':
 
     plt.show()
     
-
-if __name__ == '__main__':
-    main()
