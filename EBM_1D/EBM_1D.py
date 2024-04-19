@@ -147,7 +147,7 @@ def albedo(Yt, Yu, tcrit, asfc, aice, t, apln):
         jice_n = 0.0
         yice_n = mpf(90)
 
-        for j in range(jmtm1-1, half_jmt-1, -1):
+        for j in range(jmtm1, half_jmt-1, -1):
             apln[j] = asfc[j]
 
     elif t[half_jmt] <= tcrit:  # Totally ice-covered case
