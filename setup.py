@@ -26,4 +26,5 @@ setup(
     This model simulates the surface temperature of Earth across different latitude zones,
     accounting for variations in solar energy, albedo effects, and other climate-related factors.
     """
+    
 )

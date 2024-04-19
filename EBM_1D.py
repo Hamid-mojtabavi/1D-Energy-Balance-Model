@@ -544,6 +544,7 @@ if __name__ == '__main__':
     ax.legend(custom_lines, ['Poles', 'Equator', 'Mean'])
 
     plt.show()
+    
 
 if __name__ == '__main__':
     main()
