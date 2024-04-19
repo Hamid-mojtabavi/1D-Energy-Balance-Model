@@ -4,6 +4,9 @@ from mpmath import mpf
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+def main():
+
 mp.dps = 64  # increasing accuracy
 
 '''
@@ -541,5 +544,7 @@ if __name__ == '__main__':
     ax.legend(custom_lines, ['Poles', 'Equator', 'Mean'])
 
     plt.show()
+    
 
-
+if __name__ == '__main__':
+    main()
