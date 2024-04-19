@@ -236,7 +236,8 @@ def EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s
         T_dict['sint'] = mp.sin(T_dict['yt']*deg2rad)  # sine of T grid cell latitude
         T_dict['cst'] = mp.cos(T_dict['yt']*deg2rad)  # cosine of T grid cell latitude
 
-        Yt = Yt.append(T_dict, ignore_index=True)
+        #Yt = Yt.append(T_dict, ignore_index=True)
+        Yt = pd.concat([Yt, pd.DataFrame([T_dict])], ignore_index=True)
 
         # U_dict['dyu'] = mpf(10) * deg2dist  # U grid cell height
         U_dict['yu'] = mpf(-90)  # U grid cell latitude
@@ -246,7 +247,8 @@ def EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s
         U_dict['sinu'] = mp.sin(U_dict['yu'] * deg2rad)  # sine of U grid cell latitude
         U_dict['csu'] = mp.cos(U_dict['yu'] * deg2rad)  # cosine of U grid cell latitude
 
-        Yu = Yu.append(U_dict, ignore_index=True)
+        #Yu = Yu.append(U_dict, ignore_index=True)
+        Yu = pd.concat([Yu, pd.DataFrame([U_dict])], ignore_index=True)
 
     ti = [t0] * jmtm1  # Initialize temperature at old time step (deg C)
     tf = [None]*jmtm1  # Initialize temperature at old time step (deg C)
