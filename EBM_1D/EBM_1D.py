@@ -220,7 +220,8 @@ def EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s
         References: Henderson-Sellers and McGuffie (1987) '''
 
     p2 = pi / mpf(2)  # "pi over 2"
-    solin = sfrac * scon0 * 0.25 * s  # solar insolation (W m^(-2))
+    s_array = np.array(s)  # Convert s to a numpy array for element-wise operations
+    solin = sfrac * scon0 * 0.25 * s_array  # This will now correctly perform element-wise multiplication, solar insolation (W m^(-2))
 
     # Set model grid:
     # Define T grid cells
