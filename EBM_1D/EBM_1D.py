@@ -220,36 +220,26 @@ def EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s
         References: Henderson-Sellers and McGuffie (1987) '''
 
     p2 = pi / mpf(2)  # "pi over 2"
-    s_array = np.array(s)  # Convert s to a numpy array for element-wise operations
-    solin = sfrac * scon0 * 0.25 * s_array  # This will now correctly perform element-wise multiplication, solar insolation (W m^(-2))
+    solin = sfrac * scon0 * 0.25 * s  # solar insolation (W m^(-2))
 
     # Set model grid:
     # Define T grid cells
     Yt = pd.DataFrame(columns=['yt', 'sint', 'cst'])
     Yu = pd.DataFrame(columns=['yu', 'sinu', 'csu'])
-
     for j in range(0, jmt):
-
-        T_dict, U_dict = {}, {}
-        T_dict['yt'] = mpf(-95)  # T grid cell latitude
-        if j > 0:
-            T_dict['yt'] = Yt['yt'][j-1] + mpf(10)
-        T_dict['sint'] = mp.sin(T_dict['yt']*deg2rad)  # sine of T grid cell latitude
-        T_dict['cst'] = mp.cos(T_dict['yt']*deg2rad)  # cosine of T grid cell latitude
-
-        #Yt = Yt.append(T_dict, ignore_index=True)
+        T_dict = {'yt': mpf(-95) if j == 0 else Yt.at[j-1, 'yt'] + mpf(10),
+                  'sint': mp.sin(mpf(-95)*deg2rad if j == 0 else (Yt.at[j-1, 'yt'] + mpf(10))*deg2rad),
+                  'cst': mp.cos(mpf(-95)*deg2rad if j == 0 else (Yt.at[j-1, 'yt'] + mpf(10))*deg2rad)}
+    
         Yt = pd.concat([Yt, pd.DataFrame([T_dict])], ignore_index=True)
 
-        # U_dict['dyu'] = mpf(10) * deg2dist  # U grid cell height
-        U_dict['yu'] = mpf(-90)  # U grid cell latitude
-        if j > 0:
-            U_dict['yu'] = Yu['yu'][j-1] + mpf(10)
+        U_dict = {'yu': mpf(-90) if j == 0 else Yu.at[j-1, 'yu'] + mpf(10),
+                  'sinu': mp.sin(mpf(-90)*deg2rad if j == 0 else (Yu.at[j-1, 'yu'] + mpf(10))*deg2rad),
+                  'csu': mp.cos(mpf(-90)*deg2rad if j == 0 else (Yu.at[j-1, 'yu'] + mpf(10))*deg2rad)}
 
-        U_dict['sinu'] = mp.sin(U_dict['yu'] * deg2rad)  # sine of U grid cell latitude
-        U_dict['csu'] = mp.cos(U_dict['yu'] * deg2rad)  # cosine of U grid cell latitude
-
-        #Yu = Yu.append(U_dict, ignore_index=True)
         Yu = pd.concat([Yu, pd.DataFrame([U_dict])], ignore_index=True)
+
+    ###
 
     ti = [t0] * jmtm1  # Initialize temperature at old time step (deg C)
     tf = [None]*jmtm1  # Initialize temperature at old time step (deg C)
@@ -333,7 +323,8 @@ def find_sfrac_ice(sfrac_range, step, ittmax, grid_step, asfc, year0, year_len, 
             df_EBM, tmean, yice_s, yice_n, jice_s, jice_n = \
                 EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s, latzone, scon0, tzero,
                                      tcrit, t0, sfrac, ktrans, aice, alw, blw, to_print=False)
-            df_sfrac = df_sfrac.append({'sfrac': sfrac, 'tmean': tmean, 'yice_n': yice_n, 'yice_s': yice_s}, ignore_index=True)
+            new_row = pd.DataFrame({'sfrac': [sfrac], 'tmean': [tmean], 'yice_n': [yice_n], 'yice_s': [yice_s]})
+            df_sfrac = pd.concat([df_sfrac, new_row], ignore_index=True)
             t0 = tmean
             if yice_n < 0.01:
                 if sfrac_ice == 0:
@@ -345,7 +336,8 @@ def find_sfrac_ice(sfrac_range, step, ittmax, grid_step, asfc, year0, year_len, 
             df_EBM, tmean, yice_s, yice_n, jice_s, jice_n = \
                 EnergyBalanceModel1D(ittmax, grid_step, asfc, year0, year_len, dt, cocean, s, latzone, scon0, tzero,
                                      tcrit, t0, sfrac, ktrans, aice, alw, blw, to_print=False)
-            df_sfrac = df_sfrac.append({'sfrac': sfrac, 'tmean': tmean, 'yice_n': yice_n, 'yice_s': yice_s}, ignore_index=True)
+            new_row = pd.DataFrame({'sfrac': [sfrac], 'tmean': [tmean], 'yice_n': [yice_n], 'yice_s': [yice_s]})
+            df_sfrac = pd.concat([df_sfrac, new_row], ignore_index=True)
             t0 = tmean
             if yice_n > 0.0:
                 if sfrac_ice == 0:
