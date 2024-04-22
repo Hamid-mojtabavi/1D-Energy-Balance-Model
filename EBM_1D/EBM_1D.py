@@ -490,7 +490,8 @@ if __name__ == '__main__':
     for j in np.arange(blw_range[0], blw_range[1], step=blw_step):
         sfrac_ice, df_sfrac = find_sfrac_ice(sfrac_range, step, ittmax, grid_step, asfc, year0, year_len, dt, cocean, s,
                                              latzone, scon0, tzero, tcrit,  t0, ktrans, aice, alw, blw=j, run_all=False)
-        blw_sfrac_ice = blw_sfrac_ice.append({'blw': j, 'sfrac_ice': sfrac_ice}, ignore_index=True)
+         new_row = pd.DataFrame({'blw': [j], 'sfrac_ice': [sfrac_ice]})
+         blw_sfrac_ice = pd.concat([blw_sfrac_ice, new_row], ignore_index=True)
     blw_sfrac_ice = blw_sfrac_ice.astype(float)
     blw_sfrac_ice.to_csv('blw_sfrac_ice.csv')
 
@@ -514,8 +515,9 @@ if __name__ == '__main__':
                                          scon0, tzero, tcrit, t0, sfrac, ktrans, aice, alw, blw, to_print=False)[0:2]
 
         df.insert(0, 'ktrans', ktrans)
-        df_ktrans = df_ktrans.append(df, ignore_index=True)
-        df_ktrans_tmean = df_ktrans_tmean.append({'ktrans': ktrans, 'tmean': tmean}, ignore_index=True)
+        df_ktrans = pd.concat([df_ktrans, df], ignore_index=True)
+        df_ktrans_tmean = pd.concat([df_ktrans_tmean, pd.DataFrame({'ktrans': [ktrans], 'tmean': [tmean]})], ignore_index=True)
+
 
     df_ktrans.loc[:, df.columns != 'Zone'] = df_ktrans.loc[:, df.columns != 'Zone'].astype(float)
     df_ktrans.to_csv('df_ktrans.csv')
