@@ -490,8 +490,9 @@ if __name__ == '__main__':
     for j in np.arange(blw_range[0], blw_range[1], step=blw_step):
         sfrac_ice, df_sfrac = find_sfrac_ice(sfrac_range, step, ittmax, grid_step, asfc, year0, year_len, dt, cocean, s,
                                              latzone, scon0, tzero, tcrit,  t0, ktrans, aice, alw, blw=j, run_all=False)
-         new_row = pd.DataFrame({'blw': [j], 'sfrac_ice': [sfrac_ice]})
-         blw_sfrac_ice = pd.concat([blw_sfrac_ice, new_row], ignore_index=True)
+        new_row = pd.DataFrame({'blw': [j], 'sfrac_ice': [sfrac_ice]})
+        blw_sfrac_ice = pd.concat([blw_sfrac_ice, new_row], ignore_index=True)
+
     blw_sfrac_ice = blw_sfrac_ice.astype(float)
     blw_sfrac_ice.to_csv('blw_sfrac_ice.csv')
 
