@@ -4,6 +4,9 @@
 1 - dimensional energy balance model based on the text book 
 by Henderson - Sellers and McGuffie (1987):
 
+Implemented in Python by Rafaila Grigoriou, rafaila.gr@gmail.com***
+Updated by Dr. Seyedhamidreza Mojtabavi (Seyedhamidreza.Mojtabavi@gmail.com)
+
 Two - hemispheres version (18 latitude zones)
 
 This program computes the surface temperature of a latitude zone from the local
