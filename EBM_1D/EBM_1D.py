@@ -25,6 +25,8 @@ snapshot file
 - writes a time series of global mean temperature to a history file
 
 ***Implemented in Python by Rafaila Grigoriou, rafaila.gr@gmail.com***
+Updated by Dr. Seyedhamidreza Mojtabavi (Seyedhamidreza.Mojtabavi@gmail.com) on April 23, 2024.
+
 '''
 
 # DEFINITION OF CONSTANTS
